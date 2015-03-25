@@ -1,19 +1,10 @@
 #Kronecker Products
-type KroneckerProduct{T,U<:VAT,V<:VAT} <: AbstractStructuredMatrix{T}
-    outer::U
-    inner::V
-    KroneckerProduct(outer::VAT{T},inner::VAT{T}) = new(outer,inner)
+type KroneckerProduct{T} <: AbstractMatrix{T}
+    outer::AbstractMatrix{T}
+    inner::AbstractMatrix{T}
 end
 
-function KroneckerProduct(outer::VAT,inner::VAT)
-    TU,TV = eltype(outer),eltype(inner)#need to check for equality
-    return KroneckerProduct{TU,typeof(outer),typeof(inner)}(outer,inner)
-end
-
-eltype{T,U,V}(M::KroneckerProduct{T,U,V}) = T
-
-⊗{U,V}(outer::U,inner::V) =  KroneckerProduct(outer,inner)
-
+⊗(outer,inner) =  KroneckerProduct(outer,inner)
 
 #sizes, indexing, etc
 sizes(C::KroneckerProduct) = (size(C.outer),size(C.inner))
@@ -74,8 +65,8 @@ function eigvals(C::KroneckerProduct)
     return vec([λ*μ for λ=eigvals(C.outer), μ=eigvals(C.inner)])
 end
 
-function svdvals{T,U,V}(C::KroneckerProduct{T,U,V})
-    M = minimum(size(C))
+function svdvals{T}(C::KroneckerProduct{T})
+    M = minimum(size(C))#probably don;t want to do this nonsense actually
     vals = zeros(T,M)
     nonzerovals = vec([σ*τ for σ=svdvals(C.outer), τ=svdvals(C.inner)])
     vals[1:length(nonzerovals)] = nonzerovals
