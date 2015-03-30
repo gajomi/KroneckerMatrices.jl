@@ -58,17 +58,11 @@ end
 
 ^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(C.outer^n,C.inner^n)
 
-#decompositions (eig,svd, etc)
+#factorizations (eig,svd,etc)
 function eigvals(C::KroneckerProduct)
     issquare(C) || throw(DimensionMismatch("matrix not square"))
     issquare(C.outer) && issquare(C.inner) || throw(DimensionMismatch("currently only supported for square inner and outer"))
     return vec([λ*μ for λ=eigvals(C.outer), μ=eigvals(C.inner)])
 end
 
-function svdvals{T}(C::KroneckerProduct{T})
-    M = minimum(size(C))#probably don;t want to do this nonsense actually
-    vals = zeros(T,M)
-    nonzerovals = vec([σ*τ for σ=svdvals(C.outer), τ=svdvals(C.inner)])
-    vals[1:length(nonzerovals)] = nonzerovals
-    return vals
-end
+svdvals{T}(C::KroneckerProduct{T}) = vec([σ*τ for σ=svdvals(C.outer), τ=svdvals(C.inner)])
