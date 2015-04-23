@@ -1,44 +1,11 @@
 #Kronecker Products
-type KroneckerProduct{T} <: AbstractMatrix{T}
+type KroneckerProduct{T} <: KroneckerMatrix{T}
     outer::AbstractMatrix{T}
     inner::AbstractMatrix{T}
 end
 
 ⊗(outer,inner) =  KroneckerProduct(outer,inner)
 
-#sizes, indexing, etc
-sizes(C::KroneckerProduct) = (size(C.outer),size(C.inner))
-size(C::KroneckerProduct) = map(*,sizes(C)...)
-
-function hasmixedproductproperty(C::KroneckerProduct,D::KroneckerProduct)
-    (MCO,NCO),(MCI,NCI) = sizes(C)
-    (MDO,NDO),(MDI,NDI) = sizes(D)
-    return NCO==MDO && NCI==MDI
-end
-hasmpp = hasmixedproductproperty
-
-function outerindex(C::KroneckerProduct,i,j)
-    M,N = sizes(C)[2]
-    return (div(i-1,M)+1,div(j-1,N)+1)
-end
-
-function innerindex(C::KroneckerProduct,s,t)
-    M,N = sizes(C)[2]
-    return (rem(s-1,M)+1,rem(t-1,N)+1)
-end
-
-function getindex(C::KroneckerProduct, i::Integer,j::Integer)
-    os,ot = outerindex(C,i,j)
-    is,it = innerindex(C,i,j)
-    return C.outer[os,ot]*C.inner[is,it]
-end
-
-function convert{T}(::Type{AbstractMatrix{T}},C::KroneckerProduct)
-    M,N = size(C)
-    return [C[i,j] for i=1:M,j=1:N]
-end
-
-#equality comparisona and friends (this could get tricky)
 
 #unary operations
 for f = (:ctranspose,:tranpose,:inv)

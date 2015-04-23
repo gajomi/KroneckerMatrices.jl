@@ -8,6 +8,7 @@ export KroneckerProduct,⊗
 
 issquare(A::AbstractMatrix) = ==(size(A)...)
 
+include("generics.jl")
 include("products.jl")
 
 end
