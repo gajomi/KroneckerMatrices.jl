@@ -1,8 +1,8 @@
 abstract KroneckerMatrix{T} <: AbstractMatrix{T}
 
 #sizes, indexing, etc
-sizes(C::KroneckerMatrix) = (size(C.outer),size(C.inner))
-size(C::KroneckerMatrix) = map(*,sizes(C)...)
+sizes(C::KroneckerMatrix) = (size(C.outer),size(C.inner))#[size(M) for M in C.factors]
+size(C::KroneckerMatrix) = map(*,sizes(C)...)#something totally different
 
 function hasmixedproductproperty(C::KroneckerMatrix,D::KroneckerMatrix)
     (MCO,NCO),(MCI,NCI) = sizes(C)
@@ -19,12 +19,6 @@ end
 function innerindex(C::KroneckerMatrix,s,t)
     M,N = sizes(C)[2]
     return (rem(s-1,M)+1,rem(t-1,N)+1)
-end
-
-function getindex(C::KroneckerMatrix, i::Integer,j::Integer)
-    os,ot = outerindex(C,i,j)
-    is,it = innerindex(C,i,j)
-    return C.outer[os,ot]*C.inner[is,it]
 end
 
 function convert{T}(::Type{AbstractMatrix{T}},C::KroneckerMatrix)

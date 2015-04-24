@@ -6,6 +6,11 @@ end
 
 ⊗(outer,inner) =  KroneckerProduct(outer,inner)
 
+function getindex(C::KroneckerProduct, i::Integer,j::Integer)
+    os,ot = outerindex(C,i,j)
+    is,it = innerindex(C,i,j)
+    return C.outer[os,ot]*C.inner[is,it]
+end
 
 #unary operations
 for f = (:ctranspose,:tranpose,:inv)
