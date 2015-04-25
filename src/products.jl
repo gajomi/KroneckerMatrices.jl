@@ -6,10 +6,14 @@ end
 
 ⊗(outer,inner) =  KroneckerProduct(outer,inner)
 
+function terms(C::KroneckerProduct)
+    return (C.outer,C.inner)
+end
+
 function getindex(C::KroneckerProduct, i::Integer,j::Integer)
-    os,ot = outerindex(C,i,j)
-    is,it = innerindex(C,i,j)
-    return C.outer[os,ot]*C.inner[is,it]
+    Ms = terms(C)
+    hk,hl = kronindexes(C,i,j)
+    return prod([M[k,l] for (M,k,l) in zip(Ms,hk,hl)])
 end
 
 #unary operations

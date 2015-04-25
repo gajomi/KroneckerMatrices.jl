@@ -1,8 +1,8 @@
 abstract KroneckerMatrix{T} <: AbstractMatrix{T}
 
 #sizes, indexing, etc
-sizes(C::KroneckerMatrix) = (size(C.outer),size(C.inner))#[size(M) for M in C.factors]
-size(C::KroneckerMatrix) = map(*,sizes(C)...)#something totally different
+sizes(C::KroneckerMatrix) = [size(M) for M in terms(C)]
+size(C::KroneckerMatrix) = map(*,sizes(C)...)
 
 function hasmixedproductproperty(C::KroneckerMatrix,D::KroneckerMatrix)
     (MCO,NCO),(MCI,NCI) = sizes(C)
@@ -11,17 +11,17 @@ function hasmixedproductproperty(C::KroneckerMatrix,D::KroneckerMatrix)
 end
 hasmpp = hasmixedproductproperty
 
-function outerindex(C::KroneckerMatrix,i,j)
-    M,N = sizes(C)[2]
-    return (div(i-1,M)+1,div(j-1,N)+1)
+function hindexes(i::Int64,widths)
+    return [(mod(div(i-1,u),w)+1)::Int64 for (u,w) in zip(cumprod([1, widths...]),widths)]
 end
 
-function innerindex(C::KroneckerMatrix,s,t)
-    M,N = sizes(C)[2]
-    return (rem(s-1,M)+1,rem(t-1,N)+1)
+function kronindexes(C::KroneckerMatrix,i::Int64,j::Int64)
+    iwidths,jwidths = zip(sizes(C)...)
+    hi,hj = hindexes(i,iwidths),hindexes(j,jwidths)
+    return (hi,hj)
 end
+
 
 function convert{T}(::Type{AbstractMatrix{T}},C::KroneckerMatrix)
-    M,N = size(C)
-    return [C[i,j] for i=1:M,j=1:N]
+    return kron(C.outer,C.inner)
 end
