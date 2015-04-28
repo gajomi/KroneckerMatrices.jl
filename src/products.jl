@@ -22,14 +22,18 @@ for f = (:ctranspose,:tranpose,:inv)
 end
 
 #a "checksquare" macro could be helpful here
-trace(C::KroneckerProduct) = trace(C.outer)*trace(C.inner)
-rank(C::KroneckerProduct) = rank(C.outer)*rank(C.inner)
+trace(C::KroneckerProduct) = prod([trace(term) for term in terms(C)])
+rank(C::KroneckerProduct) = prod([rank(term) for term in terms(C)])
 
 function det(C::KroneckerProduct)
-    (K,L),(M,N) = sizes(C)
-    K*M==L*N || throw(DimensionMismatch("matrix is not square"))
-    #if either inner or outer not square C is rank deficient
-    return (K==L && M==N) ? det(C.outer)^M*det(C.inner)^K : 0.0
+    Ms,Ns = [[S...] for S in zip(sizes(C)...)]
+    bigM,bigN = prod(Ms),prod(Ns)
+    bigM == bigN || throw(DimensionMismatch("matrix is not square"))
+    if all(Ms .== Ns)
+        return prod([det(term)^div(bigM,M) for (term,M) in zip(terms(C),Ms)])
+    else
+        return 0.
+    end
 end
 
 ^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(C.outer^n,C.inner^n)
@@ -37,8 +41,8 @@ end
 #factorizations (eig,svd,etc)
 function eigvals(C::KroneckerProduct)
     issquare(C) || throw(DimensionMismatch("matrix not square"))
-    issquare(C.outer) && issquare(C.inner) || throw(DimensionMismatch("currently only supported for square inner and outer"))
-    return vec([λ*μ for λ=eigvals(C.outer), μ=eigvals(C.inner)])
+    all(issquare,terms(C)) || throw(DimensionMismatch("currently only supported for square inner and outer"))
+    return [prod([λs...]) for λs in product([eigvals(term) for term in terms(C)]...)]
 end
 
-svdvals{T}(C::KroneckerProduct{T}) = vec([σ*τ for σ=svdvals(C.outer), τ=svdvals(C.inner)])
+svdvals{T}(C::KroneckerProduct{T}) =[prod([σs...]) for σs in product([svdvals(term) for term in terms(C)]...)]
