@@ -23,5 +23,5 @@ end
 
 
 function convert{T}(::Type{AbstractMatrix{T}},C::KroneckerMatrix)
-    return kron(C.outer,C.inner)
+    return kronproduct(terms(C)...)
 end

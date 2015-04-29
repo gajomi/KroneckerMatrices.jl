@@ -1,13 +1,16 @@
 #Kronecker Products
 type KroneckerProduct{T} <: KroneckerMatrix{T}
-    outer::AbstractMatrix{T}
-    inner::AbstractMatrix{T}
+    terms::Vector{AbstractMatrix{T}}
+end
+
+function KroneckerProduct(terms...)
+    return KroneckerProduct(AbstractMatrix{Float64}[terms...])
 end
 
 ⊗(outer,inner) =  KroneckerProduct(outer,inner)
 
 function terms(C::KroneckerProduct)
-    return (C.outer,C.inner)
+    return C.terms
 end
 
 function getindex(C::KroneckerProduct, i::Integer,j::Integer)
@@ -18,12 +21,12 @@ end
 
 #unary operations
 for f = (:ctranspose,:tranpose,:inv)
-    @eval ($f)(C::KroneckerProduct) = KroneckerProduct(($f)(C.outer),($f)(C.inner))
+    @eval ($f)(C::KroneckerProduct) = KroneckerProduct(Any[($f)(term) for term in terms(C)]...)
 end
 
-#a "checksquare" macro could be helpful here
-trace(C::KroneckerProduct) = prod([trace(term) for term in terms(C)])
-rank(C::KroneckerProduct) = prod([rank(term) for term in terms(C)])
+for f = (:trace,:rank)
+    @eval ($f)(C::KroneckerProduct) = prod([($f)(term) for term in terms(C)])
+end
 
 function det(C::KroneckerProduct)
     Ms,Ns = [[S...] for S in zip(sizes(C)...)]
@@ -36,7 +39,7 @@ function det(C::KroneckerProduct)
     end
 end
 
-^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(C.outer^n,C.inner^n)
+^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(Any[term^n for term in terms(C)]...)
 
 #factorizations (eig,svd,etc)
 function eigvals(C::KroneckerProduct)
