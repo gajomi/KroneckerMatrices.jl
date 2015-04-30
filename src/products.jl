@@ -29,14 +29,14 @@ for f = (:trace,:rank)
     @eval ($f)(C::KroneckerProduct) = prod([($f)(term) for term in terms(C)])
 end
 
-function det(C::KroneckerProduct)
+function det{T}(C::KroneckerProduct{T})
     Ms,Ns = [[S...] for S in zip(sizes(C)...)]
     bigM,bigN = prod(Ms),prod(Ns)
     bigM == bigN || throw(DimensionMismatch("matrix is not square"))
     if all(Ms .== Ns)
         return prod([det(term)^div(bigM,M) for (term,M) in zip(terms(C),Ms)])
     else
-        return 0.
+        return zero(T)
     end
 end
 
