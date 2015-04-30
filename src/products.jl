@@ -4,10 +4,11 @@ type KroneckerProduct{T} <: KroneckerMatrix{T}
 end
 
 function KroneckerProduct(terms...)
-    return KroneckerProduct(AbstractMatrix{Float64}[terms...])
+    T = promote_type([eltype(term) for term in terms]...)
+    return KroneckerProduct(AbstractMatrix{T}[terms...])
 end
 
-⊗(outer,inner) =  KroneckerProduct(outer,inner)
+⊗(terms...) =  KroneckerProduct(terms...)
 
 function terms(C::KroneckerProduct)
     return C.terms

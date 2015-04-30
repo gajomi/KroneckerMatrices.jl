@@ -6,7 +6,8 @@ import Base:eltype,convert,size,length,
             rank,det,trace,transpose,ctranspose,inv,
             svdvals,eigvals
 
-export KroneckerProduct,⊗,sizes,terms
+export KroneckerProduct,⊗,terms,sizes,
+       kronproduct
 
 issquare(A::AbstractMatrix) = ==(size(A)...)
 

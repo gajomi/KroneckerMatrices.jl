@@ -16,10 +16,10 @@ Binner = ones(S,T)
 #tests for square Kronecker Products
 for (outer,inner) in zip(Any[Aouter Bouter],Any[Ainner Binner])
     M = KroneckerProduct(outer,inner)
-    Mfull = kron(outer,inner)
+    Mfull = kronproduct(outer,inner)
     @test size(M) == size(Mfull)
-    @test convert(AbstractMatrix{Float64},M) == Mfull
-    @test convert(AbstractMatrix{Float64},M') == Mfull'
+    @test convert(Matrix{Float64},M) == Mfull
+    @test convert(Matrix{Float64},M') == Mfull'
     @test rank(M) == rank(Mfull)
     @test det(M) == det(Mfull)
 
@@ -34,7 +34,7 @@ end
 
 #tests for square Kronecker products with square factors
 B = KroneckerProduct(Bouter,Binner)
-Bfull = kron(Bouter,Binner)
+Bfull = kronproduct(Bouter,Binner)
 
 #for now test sorted eigs, ordering is different for different situation in the full problem
 #not sure what the right tolerance should be here (probably should try to compute)

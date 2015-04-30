@@ -21,7 +21,6 @@ function kronindexes(C::KroneckerMatrix,i::Int64,j::Int64)
     return (hi,hj)
 end
 
-
-function convert{T}(::Type{AbstractMatrix{T}},C::KroneckerMatrix)
+function convert{T}(::Type{Matrix{T}},C::KroneckerMatrix)
     return kronproduct(terms(C)...)
 end
