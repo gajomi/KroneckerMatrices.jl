@@ -1,19 +1,7 @@
-function kronproduct(As...)
-    n = length(As)
-    B = As[1]
-    for k=2:n
-        B = kron(B,As[k])
-    end
-    return B
-end
+kronproduct = kron
 
-function kronpower(A::Matrix,n::Integer)
-    B = A
-    for k=1:n
-        B = kron(B,A)
-    end
-    return B
-end
+kronpower(A::Matrix,n::Integer) = n==1? A :kronproduct([A for _ in 1:n]...)
+
 
 #function kronsum(A::Matrix,B::Matrix)
 #    K,L = size(A)
