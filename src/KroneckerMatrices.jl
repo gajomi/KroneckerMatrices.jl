@@ -9,8 +9,7 @@ import Base:eltype,convert,size,length,
 export KroneckerProduct,⊗,terms,sizes,
        kronproduct
 
-issquare(A::AbstractMatrix) = ==(size(A)...)
-
+include("utils.jl")
 include("fullkronfuns.jl")
 include("generics.jl")
 include("products.jl")
