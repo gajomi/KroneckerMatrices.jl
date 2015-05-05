@@ -11,8 +11,10 @@ size(C::KroneckerMatrix) = map(*,sizes(C)...)
 #end
 #hasmpp = hasmixedproductproperty
 
+#do I need to merely reverse something?
 function hindexes(i::Int64,widths)
-    return [(mod(div(i-1,u),w)+1)::Int64 for (u,w) in zip(cumprod([1, widths...]),widths)]
+    widths = reverse(widths)
+    return reverse([(mod(div(i-1,u),w)+1)::Int64 for (u,w) in zip(cumprod([1, widths...]),widths)])
 end
 
 function kronindexes(C::KroneckerMatrix,i::Int64,j::Int64)
