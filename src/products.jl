@@ -46,7 +46,7 @@ end
 function eigvals(C::KroneckerProduct)
     issquare(C) || throw(DimensionMismatch("matrix not square"))
     all(issquare,terms(C)) || throw(DimensionMismatch("currently only supported for square inner and outer"))
-    return [prod([λs...]) for λs in product([eigvals(term) for term in terms(C)]...)]
+    return KroneckerProduct([mat(eigvals(term)) for term in terms(C)]...)
 end
 
-svdvals{T}(C::KroneckerProduct{T}) =[prod([σs...]) for σs in product([svdvals(term) for term in terms(C)]...)]
+svdvals{T}(C::KroneckerProduct{T}) =KroneckerProduct([mat(svdvals(term)) for term in terms(C)]...)

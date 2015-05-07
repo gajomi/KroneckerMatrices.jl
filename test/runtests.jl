@@ -29,12 +29,12 @@ for (outer,inner) in zip(Any[Aouter Bouter],Any[Ainner Binner])
     @test det(M) == det(Mfull)
 
     fullsvdvals = sort(svdvals(Mfull),by = -)
-    #kronsvdvalstrunc = sort(vec(convert(Matrix{Float64},svdvals(M))),by = -)
-    #kronsvdvals = zeros(eltype(M),length(fullsvdvals))
-    #kronsvdvals[1:length(kronsvdvalstrunc)] = kronsvdvalstrunc
-    #for (σ,τ) in zip(kronsvdvals,fullsvdvals)
-    #    @test_approx_eq_eps(σ,τ,10^(-9.))
-    #end
+    kronsvdvalstrunc = sort(vec(convert(Matrix{Float64},svdvals(M))),by = -)
+    kronsvdvals = zeros(eltype(M),length(fullsvdvals))
+    kronsvdvals[1:length(kronsvdvalstrunc)] = kronsvdvalstrunc
+    for (σ,τ) in zip(kronsvdvals,fullsvdvals)
+        @test_approx_eq_eps(σ,τ,10^(-9.))
+    end
 end
 
 #tests for square Kronecker products with square factors
@@ -44,6 +44,6 @@ Bfull = kronproduct(Bouter,Binner)
 #for now test sorted eigs, ordering is different for different situation in the full problem
 #not sure what the right tolerance should be here (probably should try to compute)
 
-#for (λ1,λ2) in zip(sort(eigvals(B),by=real),sort(eigvals(Bfull),by=real))
-#    @test_approx_eq_eps(λ1,λ2,10^(-9.))
-#end
+for (λ1,λ2) in zip(sort(vec(convert(Matrix{eltype(B)},eigvals(B))),by=real),sort(eigvals(Bfull),by=real))
+    @test_approx_eq_eps(λ1,λ2,10^(-9.))
+end
