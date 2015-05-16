@@ -1,8 +1,13 @@
-abstract KronMat{T} <: AbstractMatrix{T}
+abstract AbstractKronMat{T} <: AbstractMatrix{T}
+abstract AbstractKronVec{T} <: AbstractVector{T}
+typealias AbstractKronVecOrMat Union(AbstractKronMat,AbstractKronVec)
 
 #sizes, indexing, etc
-sizes(C::KronMat) = [size(M) for M in terms(C)]
-size(C::KronMat) = map(*,sizes(C)...)
+sizes(C::AbstractKronVecOrMat) = [size(M) for M in terms(C)]
+size(C::AbstractKronVecOrMat) = map(*,sizes(C)...)
+
+lengths(C::AbstractKronVec) = [length(term) for term in terms(C)]
+length(C::AbstractKronVec) = prod(lengths(C))
 
 #function hasmixedproductproperty(C::KronMat,D::KronMat)
 #    (MCO,NCO),(MCI,NCI) = sizes(C)
@@ -17,12 +22,17 @@ function hindexes(i::Int64,widths)
     return reverse([(mod(div(i-1,u),w)+1)::Int64 for (u,w) in zip(cumprod([1, widths...]),widths)])
 end
 
-function kronindexes(C::KronMat,i::Int64,j::Int64)
+function kronindexes(C::AbstractKronVec,i::Int64)
+    widths = lengths(C)
+    return hindexes(i,widths)
+end
+
+function kronindexes(C::AbstractKronMat,i::Int64,j::Int64)
     iwidths,jwidths = zip(sizes(C)...)
     hi,hj = hindexes(i,iwidths),hindexes(j,jwidths)
     return (hi,hj)
 end
 
-function convert{T}(::Type{Matrix{T}},C::KronMat)
-    return kronproduct(terms(C)...)
+function convert{T}(::Type{Matrix{T}},C::AbstractKronMat)
+    return kronprod(terms(C)...)
 end

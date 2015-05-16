@@ -6,8 +6,9 @@ import Base:eltype,convert,size,length,
             rank,det,trace,transpose,ctranspose,inv,
             svdvals,eigfact,eigvals
 
-export KronProdMat,terms,sizes,
-       kronproduct,kronpower
+export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
+       KronProdMat,terms,sizes,
+       kronprod,kronpow
 
 include("utils.jl")
 include("fullkronfuns.jl")

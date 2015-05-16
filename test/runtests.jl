@@ -16,7 +16,7 @@ Binner = ones(S,T)
 #tests for square Kronecker Products
 for (outer,inner) in zip(Any[Aouter Bouter],Any[Ainner Binner])
     M = KronProdMat(outer,inner)
-    Mfull = kronproduct(outer,inner)
+    Mfull = kronprod(outer,inner)
     @test size(M) == size(Mfull)
     K,L = size(M)
     for i = 1:K
@@ -39,7 +39,7 @@ end
 
 #tests for square Kronecker products with square factors
 B = KronProdMat(Bouter,Binner)
-Bfull = kronproduct(Bouter,Binner)
+Bfull = kronprod(Bouter,Binner)
 
 #U,Ufull = convert(Matrix{eltype(B)},eigvecs(B)),eigvecs(Bfull)
 #Bsim,Bsimfull = U*U',Ufull*Ufull'

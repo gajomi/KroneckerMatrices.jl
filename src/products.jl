@@ -1,5 +1,5 @@
 #Kronecker Products
-type KronProdMat{T} <: KronMat{T}
+type KronProdMat{T} <: AbstractKronMat{T}
     terms::Vector{AbstractMatrix{T}}
 end
 
