@@ -4,14 +4,15 @@ using Iterators
 
 import Base:eltype,convert,size,length,
             rank,det,trace,transpose,ctranspose,inv,
-            svdvals,eigvals
+            svdvals,eigfact,eigvals
 
 export KroneckerProduct,⊗,terms,sizes,
-       kronproduct
+       kronproduct,kronpower
 
 include("utils.jl")
 include("fullkronfuns.jl")
 include("generics.jl")
 include("products.jl")
+include("factorization.jl")
 
 end

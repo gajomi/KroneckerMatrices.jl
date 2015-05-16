@@ -41,12 +41,3 @@ function det{T}(C::KroneckerProduct{T})
 end
 
 ^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(Any[term^n for term in terms(C)]...)
-
-#factorizations (eig,svd,etc)
-function eigvals(C::KroneckerProduct)
-    issquare(C) || throw(DimensionMismatch("matrix not square"))
-    all(issquare,terms(C)) || throw(DimensionMismatch("currently only supported for square inner and outer"))
-    return KroneckerProduct([mat(eigvals(term)) for term in terms(C)]...)
-end
-
-svdvals{T}(C::KroneckerProduct{T}) =KroneckerProduct([mat(svdvals(term)) for term in terms(C)]...)
