@@ -6,7 +6,7 @@ import Base:eltype,convert,size,length,
             rank,det,trace,transpose,ctranspose,inv,
             svdvals,eigfact,eigvals
 
-export KroneckerProduct,⊗,terms,sizes,
+export KronProdMat,terms,sizes,
        kronproduct,kronpower
 
 include("utils.jl")

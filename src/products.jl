@@ -1,20 +1,20 @@
 #Kronecker Products
-type KroneckerProduct{T} <: KroneckerMatrix{T}
+type KronProdMat{T} <: KronMat{T}
     terms::Vector{AbstractMatrix{T}}
 end
 
-function KroneckerProduct(terms...)
+function KronProdMat(terms...)
     T = promote_type([eltype(term) for term in terms]...)
-    return KroneckerProduct(AbstractMatrix{T}[terms...])
+    return KronProdMat(AbstractMatrix{T}[terms...])
 end
 
-⊗(terms...) =  KroneckerProduct(terms...)
+⊗(terms...) =  KronProdMat(terms...)
 
-function terms(C::KroneckerProduct)
+function terms(C::KronProdMat)
     return C.terms
 end
 
-function getindex(C::KroneckerProduct, i::Integer,j::Integer)
+function getindex(C::KronProdMat, i::Integer,j::Integer)
     Ms = terms(C)
     hk,hl = kronindexes(C,i,j)
     return prod([M[k,l] for (M,k,l) in zip(Ms,hk,hl)])
@@ -22,14 +22,14 @@ end
 
 #unary operations
 for f = (:ctranspose,:tranpose,:inv)
-    @eval ($f)(C::KroneckerProduct) = KroneckerProduct(Any[($f)(term) for term in terms(C)]...)
+    @eval ($f)(C::KronProdMat) = KronProdMat(Any[($f)(term) for term in terms(C)]...)
 end
 
 for f = (:trace,:rank)
-    @eval ($f)(C::KroneckerProduct) = prod([($f)(term) for term in terms(C)])
+    @eval ($f)(C::KronProdMat) = prod([($f)(term) for term in terms(C)])
 end
 
-function det{T}(C::KroneckerProduct{T})
+function det{T}(C::KronProdMat{T})
     Ms,Ns = [[S...] for S in zip(sizes(C)...)]
     bigM,bigN = prod(Ms),prod(Ns)
     bigM == bigN || throw(DimensionMismatch("matrix is not square"))
@@ -40,4 +40,4 @@ function det{T}(C::KroneckerProduct{T})
     end
 end
 
-^{T<:Integer}(C::KroneckerProduct,n::T) = KroneckerProduct(Any[term^n for term in terms(C)]...)
+^{T<:Integer}(C::KronProdMat,n::T) = KronProdMat(Any[term^n for term in terms(C)]...)

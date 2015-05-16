@@ -1,6 +1,6 @@
-kronproduct = kron
+kronprod = kron
 
-kronpower(A::Matrix,n::Integer) = n==1? A :kronproduct([A for _ in 1:n]...)
+kronpow(A::Matrix,n::Integer) = n==1? A : kronproduct([A for _ in 1:n]...)
 
 
 #function kronsum(A::Matrix,B::Matrix)
