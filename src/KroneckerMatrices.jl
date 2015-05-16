@@ -7,7 +7,7 @@ import Base:eltype,convert,size,length,
             svdvals,eigfact,eigvals
 
 export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
-       KronProdMat,terms,sizes,
+       KronProdMat,KronProdVec,terms,sizes,
        kronprod,kronpow
 
 include("utils.jl")

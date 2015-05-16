@@ -2,22 +2,35 @@
 type KronProdMat{T} <: AbstractKronMat{T}
     terms::Vector{AbstractMatrix{T}}
 end
+type KronProdVec{T} <: AbstractKronVec{T}
+    terms::Vector{AbstractVector{T}}
+end
 
 function KronProdMat(terms...)
     T = promote_type([eltype(term) for term in terms]...)
     return KronProdMat(AbstractMatrix{T}[terms...])
 end
+function KronProdVec(terms...)
+    T = promote_type([eltype(term) for term in terms]...)
+    return KronProdVec(AbstractVector{T}[terms...])
+end
+
 
 ⊗(terms...) =  KronProdMat(terms...)
 
-function terms(C::KronProdMat)
-    return C.terms
-end
+terms(C::KronProdMat) = C.terms
+terms(C::KronProdVec) = C.terms
 
 function getindex(C::KronProdMat, i::Integer,j::Integer)
     Ms = terms(C)
     hk,hl = kronindexes(C,i,j)
     return prod([M[k,l] for (M,k,l) in zip(Ms,hk,hl)])
+end
+
+function getindex(C::KronProdVec,i::Integer)
+    Vs = terms(C)
+    hk = kronindexes(C,i)
+    return prod([V[k] for (V,k) in zip(Vs,hk)])
 end
 
 #unary operations
