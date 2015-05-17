@@ -24,12 +24,12 @@ for (outer,inner) in zip(Any[Aouter Bouter],Any[Ainner Binner])
             @test M[i,j] == Mfull[i,j]
         end
     end
-    @test convert(Matrix{Float64},M') == Mfull'
+    @test full(M') == Mfull'
     @test rank(M) == rank(Mfull)
     @test det(M) == det(Mfull)
 
     fullsvdvals = sort(svdvals(Mfull),by = -)
-    kronsvdvalstrunc = sort(vec(convert(Matrix{Float64},svdvals(M))),by = -)
+    kronsvdvalstrunc = sort(full(svdvals(M)),by = -)
     kronsvdvals = zeros(eltype(M),length(fullsvdvals))
     kronsvdvals[1:length(kronsvdvalstrunc)] = kronsvdvalstrunc
     for (σ,τ) in zip(kronsvdvals,fullsvdvals)

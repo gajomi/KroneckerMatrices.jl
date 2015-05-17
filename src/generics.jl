@@ -36,3 +36,13 @@ end
 function convert{T}(::Type{Matrix{T}},C::AbstractKronMat)
     return kronprod(terms(C)...)
 end
+
+function full{T}(C::AbstractKronMat{T})
+    M,N = size(C)
+    return T[C[i,j] for i=1:M, j = 1:N]
+end
+
+function full{T}(C::AbstractKronVec{T})
+    N = length(C)
+    return T[C[i] for i=1:N]
+end
