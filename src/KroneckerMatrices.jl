@@ -12,7 +12,7 @@ export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
 
 include("utils.jl")
 include("fullkronfuns.jl")
-include("generics.jl")
+include("abstract.jl")
 include("products.jl")
 include("factorization.jl")
 
