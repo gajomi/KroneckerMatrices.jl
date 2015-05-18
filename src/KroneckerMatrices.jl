@@ -4,7 +4,7 @@ using Iterators
 
 import Base:eltype,convert,size,length,
             rank,det,trace,transpose,ctranspose,inv,
-            svdvals,eigfact,eigvals
+            svdfact,svd,svdvals,eigfact,eigvals,chol,qrfact
 
 export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
        KronProdMat,KronProdVec,terms,sizes,full,
