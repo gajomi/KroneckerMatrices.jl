@@ -1,4 +1,15 @@
 ##########################
+# LU Factorization w/ PP #
+##########################
+function lufact(C::KronProdMat)
+    Fs = [lufact(term) for term in terms(C)]
+    ls,us,ps = zip([(F[:L],F[:U],F[:P]) for F in Fs]...)
+    #note the the following only returns permutation matrices, as opposed to pivot indexes
+    return [:L=>KronProdMat(ls...),:U=>KronProdMat(us...),:P=>KronProdMat(ps...)]
+end
+
+
+##########################
 # Cholesky Factorization #
 ##########################
 chol(C::KronProdMat) = KronProdMat([chol(term) for term in terms(C)])
