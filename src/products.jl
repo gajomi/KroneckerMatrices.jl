@@ -54,3 +54,9 @@ function det{T}(C::KronProdMat{T})
 end
 
 ^{T<:Integer}(C::KronProdMat,n::T) = KronProdMat(Any[term^n for term in terms(C)]...)
+
+#nary ops
+
+function *(Cs::KronProdMat...)
+    return [*(factors...) for factors in zip(map(terms,Cs)...)]
+end

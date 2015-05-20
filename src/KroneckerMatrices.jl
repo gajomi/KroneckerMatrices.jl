@@ -3,7 +3,7 @@ module KroneckerMatrices
 using Iterators
 
 import Base:eltype,convert,size,length,
-            rank,det,trace,transpose,ctranspose,inv,
+            rank,det,trace,transpose,ctranspose,inv,*,
             svdfact,svd,svdvals,eigfact,eigvals,chol,qrfact,lufact
 
 export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
