@@ -7,13 +7,14 @@ import Base:eltype,convert,size,length,
             svdfact,svd,svdvals,eigfact,eigvals,chol,qrfact,lufact
 
 export AbstractKronMat,AbstractKronVec,AbstractKronMatOrVec,
-       KronProdMat,KronProdVec,terms,sizes,full,
-       kronprod,kronpow
+       KronProdMat,KronProdVec,KronSumMat,terms,sizes,full,
+       kronprod,kronprod,kronsum
 
 include("utils.jl")
 include("fullkronfuns.jl")
 include("abstract.jl")
 include("products.jl")
+include("sums.jl")
 include("factorization.jl")
 
 end

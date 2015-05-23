@@ -1,14 +1,13 @@
 kronprod = kron
 
-kronpow(A::Matrix,n::Integer) = n==1? A : kronproduct([A for _ in 1:n]...)
+kronpow(A::Matrix,n::Integer) = n==1? A : kronprod([A for _ in 1:n]...)
 
-
-#function kronsum(A::Matrix,B::Matrix)
-#    K,L = size(A)
-#    M,N = size(B)
-#    K==L || error("arguments must be square matrices")
-#    return kronproduct(A,diagm(ones(M)))+kronproduct(diagm(ones(K)),B)
-#end
+function kronsum(terms...)
+    Ms,Ns = zip([size(term) for term in terms]...)
+    Ms == Ns || throw(DimensionMismatch("term not square"))
+    D = [eye(M) for M in Ms]
+    return sum([kronprod(setindex!(copy(D),term,i)...) for (i,term) in enumerate(terms)])
+end
 
 #function kronrepeatedsum(A::Matrix,n::Integer)
 #    B = A
