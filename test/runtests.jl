@@ -38,18 +38,18 @@ for (outer,inner) in zip(Any[Aouter Bouter],Any[Ainner Binner])
 end
 
 #tests for square Kronecker products with square factors
-B = KronProdMat(Bouter,Binner)
-Bfull = kronprod(Bouter,Binner)
+Cimpl = KronProdMat(Bouter,Binner)
+Cexpl = kronprod(Bouter,Binner)
 
-#U,Ufull = convert(Matrix{eltype(B)},eigvecs(B)),eigvecs(Bfull)
-#Bsim,Bsimfull = U*U',Ufull*Ufull'
-#N = length(B)
-#for i = 1:N, j = 1:N
-#    @test_approx_eq_eps(Bsim[i,j],Bsimfull[i,j],10*eps())
-#end
+Λimpl,Vimpl = eig(Cimpl)
+Λimpl,Vimpl = full(Λimpl),full(Vimpl)
+Λexpl,Vexpl = eig(Cexpl)
+Λimplflat = [abs(λ)>10*eps() ? 1. : 0. for λ in Λimpl]
+Λexplflat = [abs(λ)>10*eps() ? 1. : 0. for λ in Λexpl]
+#note: this is kind of a wierd test. Needs explantion
+err = maximum(abs(Vimpl*diagm(Λimplflat)*Vimpl'-Vexpl*diagm(Λexplflat)*Vexpl'))
+@test_approx_eq_eps(0.,err,10*eps())
 
-#for now test sorted eigs, ordering is different for different situation in the full problem
-#not sure what the right tolerance should be here (probably should try to compute)
 
 #for (λ1,λ2) in zip(sort(vec(convert(Matrix{eltype(B)},eigvals(B))),by=real),sort(eigvals(Bfull),by=real))
 #    @test_approx_eq_eps(λ1,λ2,10*eps())
